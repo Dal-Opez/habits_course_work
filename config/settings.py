@@ -14,6 +14,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -163,3 +164,14 @@ CORS_ALLOWED_ORIGINS = [
     "https://ваш-фронтенд.домен",  # Пример для продакшена
 ]
 CORS_ALLOW_CREDENTIALS = True  # Если фронтенд отправляет куки или заголовки аутентификации
+# Добавляем в settings.py
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # Токен вашего бота
+# Настройки Celery
+CELERY_BROKER_URL = "redis://localhost:6379/0"  # Или amqp://guest@localhost//
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BEAT_SCHEDULE = {
+    'check_habits_daily': {
+        'task': 'habits.tasks.check_habits_and_notify',
+        'schedule': crontab(hour=8, minute=0),  # Ежедневно в 8:00
+    },
+}

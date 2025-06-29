@@ -81,6 +81,14 @@ class Habit(models.Model):
         super().save(*args, **kwargs)
 
     def mark_completed(self):
-        """Отметить привычку как выполненную"""
+        """Отметить привычку как выполненную и отправить уведомление"""
         self.last_completed = timezone.now()
         self.save()
+
+        # Отправляем уведомление через Celery
+        if self.user.telegram_id:
+            message = f"Привычка выполнена: {self.action} в {self.time}"
+            celery_app.send_task(
+                "habits.tasks.send_telegram_notification",
+                args=[self.user.telegram_id, message]
+            )
