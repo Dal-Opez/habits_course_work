@@ -65,6 +65,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -156,3 +157,9 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = "users.User"
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Пример для локального фронтенда
+    "https://ваш-фронтенд.домен",  # Пример для продакшена
+]
+CORS_ALLOW_CREDENTIALS = True  # Если фронтенд отправляет куки или заголовки аутентификации
