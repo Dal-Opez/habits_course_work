@@ -3,6 +3,7 @@ from .views import (
     HabitListCreateView,
     HabitRetrieveUpdateDestroyView,
     PublicHabitListView,
+    MarkHabitCompletedView,
 )
 
 urlpatterns = [
@@ -13,4 +14,9 @@ urlpatterns = [
         name="habit-detail",
     ),
     path("habits/public/", PublicHabitListView.as_view(), name="public-habit-list"),
+    path(
+        "habits/<int:pk>/complete/",
+        MarkHabitCompletedView.as_view(),
+        name="habit-mark-completed",
+    ),
 ]
