@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.utils import timezone
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -92,3 +94,10 @@ class Habit(models.Model):
                 "habits.tasks.send_telegram_notification",
                 args=[self.user.telegram_id, message]
             )
+
+    def needs_reminder(self):
+        """Проверяет, нужно ли отправлять напоминание"""
+        if not self.last_completed:
+            return True
+        next_reminder = self.last_completed + timedelta(days=self.frequency)
+        return timezone.now() > next_reminder

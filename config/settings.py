@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_yasg',
     'corsheaders',
+    'django_celery_beat',
 ]
 
 REST_FRAMEWORK = {
@@ -169,9 +170,11 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # Токен вашего 
 # Настройки Celery
 CELERY_BROKER_URL = "redis://localhost:6379/0"  # Или amqp://guest@localhost//
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_WORKER_POOL = 'solo'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_BEAT_SCHEDULE = {
     'check_habits_daily': {
         'task': 'habits.tasks.check_habits_and_notify',
-        'schedule': crontab(hour=8, minute=0),  # Ежедневно в 8:00
+        'schedule': crontab(minute='*'),  # Ежедневно в 8:00
     },
 }
