@@ -74,13 +74,13 @@ class UserViewSet(GenericViewSet):
             return Response(status=status.HTTP_200_OK)
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+        serializer.save()  # Изменено: вместо perform_update используем просто save
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         if request.user.is_staff or instance == request.user:
-            self.perform_destroy(instance)
+            instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(
             {"detail": "Вы можете удалить только свой аккаунт"},

@@ -49,7 +49,7 @@ class UserTests(APITestCase):
         url = reverse("user-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(len(response.data), 2)
 
     def test_user_list_non_admin(self):
         self.client.force_authenticate(user=self.user)
@@ -74,11 +74,11 @@ class UserTests(APITestCase):
     def test_user_update_self(self):
         self.client.force_authenticate(user=self.user)
         url = reverse("user-detail", args=[self.user.id])
-        data = {"telegram_id": "654321"}
+        data = {"telegram_id": 654321}
         response = self.client.patch(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.user.refresh_from_db()
-        self.assertEqual(self.user.telegram_id, "654321")
+        self.assertEqual(self.user.telegram_id, 654321)
 
     def test_user_update_password(self):
         self.client.force_authenticate(user=self.user)
