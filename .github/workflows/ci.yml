@@ -152,6 +152,7 @@ jobs:
 
       - name: Run tests
         env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           POSTGRES_HOST: localhost  # Было DB_HOST
           POSTGRES_PORT: 5432       # Было DB_PORT
           POSTGRES_DB: ${{ secrets.POSTGRES_DB || 'test_db' }}  # Было NAME
