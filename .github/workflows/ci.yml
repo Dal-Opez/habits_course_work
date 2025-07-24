@@ -137,11 +137,11 @@ jobs:
 
       - name: Run tests
         env:
-          DB_HOST: localhost
-          DB_PORT: 5432
-          POSTGRES_DB: ${{ secrets.NAME || 'test_db' }}
-          POSTGRES_USER: ${{ secrets.USER || 'postgres' }}
-          POSTGRES_PASSWORD: ${{ secrets.PASSWORD || 'postgres' }}
+          POSTGRES_HOST: localhost  # Было DB_HOST
+          POSTGRES_PORT: 5432       # Было DB_PORT
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB || 'test_db' }}  # Было NAME
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER || 'postgres' }}  # Было USER
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || 'postgres' }}  # Было PASSWORD
         run: poetry run python manage.py test
 
   build:
@@ -242,8 +242,8 @@ jobs:
             -e POSTGRES_DB='$POSTGRES_DB' \\
             -e POSTGRES_USER='$POSTGRES_USER' \\
             -e POSTGRES_PASSWORD='$POSTGRES_PASSWORD' \\
-            -e DB_HOST='$DB_HOST' \\
-            -e DB_PORT='$DB_PORT' \\
+            -e POSTGRES_HOST='$POSTGRES_HOST' \\
+            -e POSTGRES_PORT='$POSTGRES_PORT' \\
             -e CELERY_BROKER_URL='redis://redis:6379/0' \\
             -e STRIPE_API_KEY='$STRIPE_API_KEY' \\
             -e STRIPE_PUBLIC_KEY='$STRIPE_PUBLIC_KEY' \\
