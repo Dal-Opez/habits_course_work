@@ -4,15 +4,16 @@ on: [push, pull_request]
 
 env:
   # Основные настройки
-  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
   DEBUG: "False"
 
   # Настройки базы данных
-  DB_HOST: ${{ secrets.HOST || 'localhost' }}
-  DB_PORT: ${{ secrets.PORT || '5432' }}
-  POSTGRES_DB: ${{ secrets.NAME || 'test_db' }}
-  POSTGRES_USER: ${{ secrets.USER || 'postgres' }}
-  POSTGRES_PASSWORD: ${{ secrets.PASSWORD || 'postgres' }}
+  POSTGRES_HOST: ${{ secrets.POSTGRES_HOST || 'localhost' }}
+  POSTGRES_PORT: ${{ secrets.POSTGRES_PORT || '5432' }}
+  POSTGRES_DB: ${{ secrets.POSTGRES_DB || 'test_db' }}
+  POSTGRES_USER: ${{ secrets.POSTGRES_USER || 'postgres' }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || 'postgres' }}
+
 
   # Redis/Celery
   REDIS_HOST: localhost
@@ -127,11 +128,11 @@ jobs:
 
       - name: Run migrations
         env:
-          DB_HOST: localhost
-          DB_PORT: 5432
-          POSTGRES_DB: ${{ secrets.NAME || 'test_db' }}
-          POSTGRES_USER: ${{ secrets.USER || 'postgres' }}
-          POSTGRES_PASSWORD: ${{ secrets.PASSWORD || 'postgres' }}
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB || 'test_db' }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER || 'postgres' }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || 'postgres' }}
         run: poetry run python manage.py migrate
 
       - name: Run tests
@@ -175,18 +176,17 @@ jobs:
         run: |
           echo "Проверяем наличие всех секретов:"
           secrets=(
-            "SECRET_KEY:${{ secrets.SECRET_KEY }}"
+            "DJANGO_SECRET_KEY:${{ secrets.DJANGO_SECRET_KEY }}"
             "DOCKER_HUB_USERNAME:${{ secrets.DOCKER_HUB_USERNAME }}"
-            "SSH_KEY:${{ secrets.SSH_KEY }}"
-            "SSH_USER:${{ secrets.SSH_USER }}"
-            "SERVER_IP:${{ secrets.SERVER_IP }}"
-            "STRIPE_API_KEY:${{ secrets.STRIPE_API_KEY }}"
-            "STRIPE_PUBLIC_KEY:${{ secrets.STRIPE_PUBLIC_KEY }}"
-            "POSTGRES_DB:${{ secrets.NAME }}"
-            "POSTGRES_USER:${{ secrets.USER }}"
-            "POSTGRES_PASSWORD:${{ secrets.PASSWORD }}"
-            "DB_HOST:${{ secrets.HOST }}"
-            "DB_PORT:${{ secrets.PORT }}"
+            "DEPLOY_SSH_KEY:${{ secrets.DEPLOY_SSH_KEY }}"
+            "DEPLOY_SSH_USER:${{ secrets.DEPLOY_SSH_USER }}"
+            "DEPLOY_SERVER_IP:${{ secrets.DEPLOY_SERVER_IP }}"
+            "POSTGRES_DB:${{ secrets.POSTGRES_DB }}"
+            "POSTGRES_USER:${{ secrets.POSTGRES_USER }}"
+            "POSTGRES_PASSWORD:${{ secrets.POSTGRES_PASSWORD }}"
+            "POSTGRES_HOST:${{ secrets.POSTGRES_HOST }}"
+            "POSTGRES_PORT:${{ secrets.POSTGRES_PORT }}"
+            "TELEGRAM_BOT_TOKEN:${{ secrets.TELEGRAM_BOT_TOKEN }}"
           )
           
           for secret in "${secrets[@]}"; do
@@ -202,20 +202,20 @@ jobs:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
       - name: Deploy to Server
         env:
           DOCKER_USER: ${{ secrets.DOCKER_HUB_USERNAME }}
           IMAGE_TAG: ${{ github.sha }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          POSTGRES_DB: ${{ secrets.NAME || 'test_db' }}
-          POSTGRES_USER: ${{ secrets.USER || 'postgres' }}
-          POSTGRES_PASSWORD: ${{ secrets.PASSWORD || 'postgres' }}
-          DB_HOST: ${{ secrets.HOST || 'db' }}
-          DB_PORT: ${{ secrets.PORT || '5432' }}
+          SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
+          SERVER_IP: ${{ secrets.DEPLOY_SERVER_IP }}
+          SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB || 'test_db' }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER || 'postgres' }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || 'postgres' }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST || 'db' }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT || '5432' }}
           STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
         run: |
