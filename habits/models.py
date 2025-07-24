@@ -6,6 +6,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import User
 from django.core.exceptions import ValidationError
 
+
 class Habit(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь"

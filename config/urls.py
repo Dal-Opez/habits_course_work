@@ -26,13 +26,15 @@ schema_view = get_schema_view(
    openapi.Info(
       title="Habits API",
       default_version='v1',
-      description="API для управления привычками. Позволяет создавать, просматривать, обновлять и удалять привычки, а также отмечать их выполнение.",
+      description="API для управления привычками. Позволяет создавать, просматривать,"
+                  " обновлять и удалять привычки, а также отмечать их выполнение.",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="contact@habits.local"),
       license=openapi.License(name="BSD License"),
    ),
    public=True,
 )
+
 
 def health_check(request):
     return JsonResponse({"status": "ok"}, status=200)
