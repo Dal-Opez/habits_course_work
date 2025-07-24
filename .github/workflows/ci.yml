@@ -128,6 +128,8 @@ jobs:
       - name: Run migrations
         env:
           DB_HOST: localhost
+          DB_PORT: 5432
+          POSTGRES_DB: ${{ secrets.NAME || 'test_db' }}
           POSTGRES_USER: ${{ secrets.USER || 'postgres' }}
           POSTGRES_PASSWORD: ${{ secrets.PASSWORD || 'postgres' }}
         run: poetry run python manage.py migrate
@@ -135,6 +137,8 @@ jobs:
       - name: Run tests
         env:
           DB_HOST: localhost
+          DB_PORT: 5432
+          POSTGRES_DB: ${{ secrets.NAME || 'test_db' }}
           POSTGRES_USER: ${{ secrets.USER || 'postgres' }}
           POSTGRES_PASSWORD: ${{ secrets.PASSWORD || 'postgres' }}
         run: poetry run python manage.py test
