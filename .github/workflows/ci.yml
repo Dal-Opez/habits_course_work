@@ -7,12 +7,12 @@ env:
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
   DEBUG: "False"
 
-  # Настройки базы данных
-  POSTGRES_DB: test_db
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: postgres
-  DB_HOST: localhost
-  DB_PORT: 5432
+  # Настройки базы данных (значения по умолчанию для локального тестирования)
+  HOST: localhost
+  PORT: 5432
+  POSTGRES_DB: ${{ secrets.NAME || 'test_db' }}
+  POSTGRES_USER: ${{ secrets.USER || 'postgres' }}
+  POSTGRES_PASSWORD: ${{ secrets.PASSWORD || 'postgres' }}
 
   # Redis/Celery
   REDIS_HOST: localhost
@@ -82,9 +82,9 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER || 'postgres' }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || 'postgres' }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB || 'test_db' }}
         ports:
           - 5432:5432
         options: >-
@@ -126,9 +126,13 @@ jobs:
         poetry install --no-interaction --no-ansi
 
     - name: Run migrations
+      env:
+        HOST: localhost  # Для тестов используем localhost, так как БД в services
       run: poetry run python manage.py migrate
 
     - name: Run tests
+      env:
+        HOST: localhost  # Для тестов используем localhost, так как БД в services
       run: poetry run python manage.py test
 
   build:
@@ -197,7 +201,7 @@ jobs:
           POSTGRES_DB: test_db
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          DB_PORT: 5432
+          PORT: 5432
           STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
         run: |
@@ -224,8 +228,8 @@ jobs:
             -e POSTGRES_DB='$POSTGRES_DB' \\
             -e POSTGRES_USER='$POSTGRES_USER' \\
             -e POSTGRES_PASSWORD='$POSTGRES_PASSWORD' \\
-            -e DB_HOST='db' \\
-            -e DB_PORT='$DB_PORT' \\
+            -e HOST='db' \\
+            -e PORT='$PORT' \\
             -e CELERY_BROKER_URL='redis://redis:6379/0' \\
             -e STRIPE_API_KEY='$STRIPE_API_KEY' \\
             -e STRIPE_PUBLIC_KEY='$STRIPE_PUBLIC_KEY' \\
