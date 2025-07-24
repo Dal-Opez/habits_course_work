@@ -83,9 +83,9 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_USER: ${{ secrets.USER || 'postgres' }}
-          POSTGRES_PASSWORD: ${{ secrets.PASSWORD || 'postgres' }}
-          POSTGRES_DB: ${{ secrets.NAME || 'test_db' }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER || 'postgres' }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || 'postgres' }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB || 'test_db' }}
         ports:
           - 5432:5432
         options: >-
@@ -137,7 +137,8 @@ jobs:
 
       - name: Test PostgreSQL connection
         run: |
-          PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER -d $POSTGRES_DB -c "SELECT 1"
+          PGPASSWORD=${{ secrets.POSTGRES_PASSWORD || 'postgres' }} \
+          psql -h localhost -p 5432 -U ${{ secrets.POSTGRES_USER || 'postgres' }} -d ${{ secrets.POSTGRES_DB || 'test_db' }} -c "SELECT 1"
           
       - name: Run migrations
         env:
