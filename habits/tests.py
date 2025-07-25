@@ -4,8 +4,8 @@ from rest_framework import status
 from django.urls import reverse
 from users.models import User
 from .models import Habit
-from django.utils import timezone
-from datetime import timedelta
+# from django.utils import timezone
+# from datetime import timedelta
 from django.core.exceptions import ValidationError
 
 

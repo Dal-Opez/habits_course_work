@@ -2,11 +2,11 @@ import requests
 from celery import shared_task
 from django.conf import settings
 from django.utils import timezone
-from datetime import timedelta
+# from datetime import timedelta
 from .models import Habit
 import logging
-import socket
-import urllib3
+# import socket
+# import urllib3
 
 logger = logging.getLogger(__name__)
 

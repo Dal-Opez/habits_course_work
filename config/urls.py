@@ -20,18 +20,25 @@ from django.urls import path, include
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from .telegram_service import TelegramBot
+from django.http import JsonResponse
 
 schema_view = get_schema_view(
    openapi.Info(
       title="Habits API",
       default_version='v1',
-      description="API для управления привычками. Позволяет создавать, просматривать, обновлять и удалять привычки, а также отмечать их выполнение.",
+      description="API для управления привычками. Позволяет создавать, просматривать,"
+                  " обновлять и удалять привычки, а также отмечать их выполнение.",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="contact@habits.local"),
       license=openapi.License(name="BSD License"),
    ),
    public=True,
 )
+
+
+def health_check(request):
+    return JsonResponse({"status": "ok"}, status=200)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -40,4 +47,5 @@ urlpatterns = [
     path('telegram-webhook/', TelegramBot.webhook_handler, name='telegram_webhook'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('health/', health_check),
 ]

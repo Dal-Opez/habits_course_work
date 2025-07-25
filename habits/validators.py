@@ -1,6 +1,7 @@
 from rest_framework.exceptions import ValidationError
 
-from habits.models import Habit
+# from habits.models import Habit
+
 
 def validate_habit(data):
     # Проверка 1: нельзя указать и вознаграждение, и связанную привычку
