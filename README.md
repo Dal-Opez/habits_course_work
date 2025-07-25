@@ -53,20 +53,46 @@ Ubuntu 22.04 LTS
 
 Установленные Docker и Docker Compose
 
-Открытые порты: 80 (HTTP), 443 (HTTPS), 22 (SSH)
+### Инструкция по настройке сервера
+1. Установите Docker:
+```
+sudo apt-get update && sudo apt-get install docker.io docker-compose-plugin
+```
+2. Установите фаервол:
+```
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 22/tcp
+sudo ufw enable
+```
+3. Добавьте пользователя в группу docker:
+```
+sudo usermod -aG docker $USER
+```
 
 ### Настройка CI/CD
+1. В GitHub Secrets (Settings → Secrets and variables → Actions) добавьте:
 
 Добавьте secrets в GitHub (Settings → Secrets and variables → Actions):
 
-DOCKER_HUB_USERNAME — логин Docker Hub
++ DOCKER_HUB_USERNAME — логин Docker Hub
 
-DOCKER_HUB_TOKEN — токен доступа
++ DOCKER_HUB_TOKEN — токен доступа
 
-SSH_KEY — приватный SSH-ключ для доступа к серверу
++ DEPLOY_SSH_KEY — приватный SSH-ключ для доступа к серверу
 
-SSH_USER — пользователь сервера (обычно root или ubuntu)
++ DEPLOY_SSH_USER — пользователь сервера (обычно root или ubuntu)
 
-SERVER_IP — IP сервера
++ DEPLOY_SERVER_IP — IP сервера (158.160.193.173)
 
-Остальные переменные окружения (SECRET_KEY, DB_* и т.д.)
++ DJANGO_SECRET_KEY - секретный ключ Django
+
++ TELEGRAM_BOT_TOKEN - токен Telegram-бота
+
+
+2. Workflow автоматически выполнит:
++ Тестирование и линтинг
+
++ Сборку Docker-образов
+
++ Деплой на сервер при пуше в main
